@@ -92,18 +92,43 @@ func generateFile(file *desc.FileDescriptor, schema *SchemaDescriptor) error {
 
 			if rpc.IsServerStreaming() {
 				schema.GetSubscription().addMethod(svc, rpc, in, out)
-			} else {
-				switch GetRequestType(rpcOpts, svcOpts) {
-				case gqlpb.Type_QUERY:
-					schema.GetQuery().addMethod(svc, rpc, in, out)
-				default:
-					schema.GetMutation().addMethod(svc, rpc, in, out)
-				}
+			}
+			if IsRequestQuery(rpc.GetName()) {
+				schema.GetQuery().addMethod(svc, rpc, in, out)
+				continue
+			}
+			if IsRequestMutation(rpc.GetName()) {
+				schema.GetMutation().addMethod(svc, rpc, in, out)
+				continue
+			}
+			switch GetRequestType(rpcOpts, svcOpts) {
+			case gqlpb.Type_QUERY:
+				schema.GetQuery().addMethod(svc, rpc, in, out)
+			default:
+				schema.GetMutation().addMethod(svc, rpc, in, out)
 			}
 		}
 	}
 
 	return nil
+}
+
+func IsRequestQuery(name string) bool {
+	for _, s := range []string{"get", "read", "status"} {
+		if strings.HasPrefix(ToLowerFirst(name), s) {
+			return true
+		}
+	}
+	return false
+}
+
+func IsRequestMutation(name string) bool {
+	for _, s := range []string{"create", "add", "del"} {
+		if strings.HasPrefix(ToLowerFirst(name), s) {
+			return true
+		}
+	}
+	return false
 }
 
 type SchemaDescriptorList []*SchemaDescriptor
