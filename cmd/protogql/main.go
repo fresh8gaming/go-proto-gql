@@ -13,6 +13,7 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 
 	"github.com/fresh8gaming/go-proto-gql/pkg/generator"
+	"github.com/vektah/gqlparser/ast"
 	"github.com/vektah/gqlparser/v2/formatter"
 )
 
@@ -69,6 +70,10 @@ func fatal(err error) {
 }
 
 func generateFile(schema *generator.SchemaDescriptor, merge bool) error {
+
+	if !hasSchema(schema.AsGraphql()) {
+		return nil
+	}
 	sc, err := os.Create(resolveGraphqlFilename(schema.FileDescriptors[0].GetName(), merge, *extension))
 	if err != nil {
 		return err
@@ -77,6 +82,19 @@ func generateFile(schema *generator.SchemaDescriptor, merge bool) error {
 
 	formatter.NewFormatter(sc).FormatSchema(schema.AsGraphql())
 	return nil
+}
+
+func hasSchema(schema *ast.Schema) bool {
+	if schema.Query != nil && schema.Query.Name != "Query" {
+		return true
+	}
+	if schema.Mutation != nil && schema.Mutation.Name != "Mutation" {
+		return true
+	}
+	if schema.Subscription != nil && schema.Subscription.Name != "Subscription" {
+		return true
+	}
+	return false
 }
 
 func resolveGraphqlFilename(protoFileName string, merge bool, extension string) string {
