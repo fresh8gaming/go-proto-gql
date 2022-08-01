@@ -195,13 +195,9 @@ func (s *SchemaDescriptor) AsGraphql() *ast.Schema {
 	mutationDef := *s.GetMutation().Definition
 	subscriptionsDef := *s.GetSubscription().Definition
 	schema := &ast.Schema{Types: map[string]*ast.Definition{}, Directives: s.Directives}
-	schema.Query = &queryDef
-	schema.Types["Query"] = &queryDef
-	if s.query.methods == nil {
-		schema.Query.Fields = append(schema.Query.Fields, &ast.FieldDefinition{
-			Name: "dummy",
-			Type: ast.NamedType("Boolean", &ast.Position{}),
-		})
+	if s.query.methods != nil {
+		schema.Query = &queryDef
+		schema.Types["Query"] = &queryDef
 	}
 	if s.mutation.methods != nil {
 		schema.Mutation = &mutationDef
