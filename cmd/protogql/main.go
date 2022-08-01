@@ -2,16 +2,17 @@ package main
 
 import (
 	"flag"
-	"github.com/danielvladco/go-proto-gql/pkg/protoparser"
-	"google.golang.org/protobuf/compiler/protogen"
-	"google.golang.org/protobuf/types/pluginpb"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
 
-	"github.com/danielvladco/go-proto-gql/pkg/generator"
+	"github.com/fresh8gaming/go-proto-gql/pkg/protoparser"
+	"google.golang.org/protobuf/compiler/protogen"
+	"google.golang.org/protobuf/types/pluginpb"
+
+	"github.com/fresh8gaming/go-proto-gql/pkg/generator"
 	"github.com/vektah/gqlparser/v2/formatter"
 )
 
@@ -41,8 +42,8 @@ func main() {
 	descs, err := protoparser.Parse(importPaths, fileNames)
 	fatal(err)
 	p, err := protogen.Options{}.New(&pluginpb.CodeGeneratorRequest{
-		FileToGenerate:  fileNames,
-		ProtoFile:       generator.ResolveProtoFilesRecursively(descs).AsFileDescriptorProto(),
+		FileToGenerate: fileNames,
+		ProtoFile:      generator.ResolveProtoFilesRecursively(descs).AsFileDescriptorProto(),
 	})
 	fatal(err)
 	gqlDesc, err := generator.NewSchemas(descs, *merge, *svc, p)

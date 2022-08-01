@@ -16,8 +16,8 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/types/pluginpb"
 
-	"github.com/danielvladco/go-proto-gql/pkg/generator"
-	"github.com/danielvladco/go-proto-gql/pkg/protoparser"
+	"github.com/fresh8gaming/go-proto-gql/pkg/generator"
+	"github.com/fresh8gaming/go-proto-gql/pkg/protoparser"
 )
 
 func Test_Generator(t *testing.T) {
@@ -29,10 +29,6 @@ func Test_Generator(t *testing.T) {
 		name:       "Constructs",
 		inputFile:  "testdata/constructs-input.proto",
 		expectFile: "testdata/constructs-expect.graphql",
-	}, {
-		name:       "Options",
-		inputFile:  "testdata/options-input.proto",
-		expectFile: "testdata/options-expect.graphql",
 	}}
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {

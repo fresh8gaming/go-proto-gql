@@ -11,8 +11,8 @@ Install:
 -
 
 ```sh
-go install github.com/danielvladco/go-proto-gql/protoc-gen-gql
-go install github.com/danielvladco/go-proto-gql/protoc-gen-gogql
+go install github.com/fresh8gaming/go-proto-gql/protoc-gen-gql
+go install github.com/fresh8gaming/go-proto-gql/protoc-gen-gogql
 ```
 
 Usage Examples:
