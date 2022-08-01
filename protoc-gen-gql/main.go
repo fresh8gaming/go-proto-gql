@@ -12,6 +12,7 @@ import (
 
 	"google.golang.org/protobuf/compiler/protogen"
 
+	"github.com/vektah/gqlparser/v2/ast"
 	"github.com/vektah/gqlparser/v2/formatter"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/pluginpb"
@@ -83,17 +84,32 @@ func generate(req *pluginpb.CodeGeneratorRequest) (outFiles []*pluginpb.CodeGene
 		return nil, err
 	}
 	for _, schema := range gqlDesc {
+		if !hasSchema(schema.AsGraphql()) {
+			continue
+		}
 		buff := &bytes.Buffer{}
 		formatter.NewFormatter(buff).FormatSchema(schema.AsGraphql())
+		str := buff.String()
 		protoFileName := schema.FileDescriptors[0].GetName()
-
 		outFiles = append(outFiles, &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(resolveGraphqlFilename(protoFileName, merge, extension)),
-			Content: proto.String(buff.String()),
+			Content: proto.String(str),
 		})
 	}
-
 	return
+}
+
+func hasSchema(schema *ast.Schema) bool {
+	if schema.Query != nil {
+		return true
+	}
+	if schema.Mutation != nil {
+		return true
+	}
+	if schema.Subscription != nil {
+		return true
+	}
+	return false
 }
 
 func resolveGraphqlFilename(protoFileName string, merge bool, extension string) string {

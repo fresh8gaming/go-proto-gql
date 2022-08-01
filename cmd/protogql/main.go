@@ -71,9 +71,6 @@ func fatal(err error) {
 
 func generateFile(schema *generator.SchemaDescriptor, merge bool) error {
 
-	if !hasSchema(schema.AsGraphql()) {
-		return nil
-	}
 	sc, err := os.Create(resolveGraphqlFilename(schema.FileDescriptors[0].GetName(), merge, *extension))
 	if err != nil {
 		return err
@@ -85,13 +82,13 @@ func generateFile(schema *generator.SchemaDescriptor, merge bool) error {
 }
 
 func hasSchema(schema *ast.Schema) bool {
-	if schema.Query != nil && schema.Query.Name != "Query" {
+	if schema.Query != nil {
 		return true
 	}
-	if schema.Mutation != nil && schema.Mutation.Name != "Mutation" {
+	if schema.Mutation != nil {
 		return true
 	}
-	if schema.Subscription != nil && schema.Subscription.Name != "Subscription" {
+	if schema.Subscription != nil {
 		return true
 	}
 	return false
