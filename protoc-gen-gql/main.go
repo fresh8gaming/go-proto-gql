@@ -92,6 +92,7 @@ func generate(req *pluginpb.CodeGeneratorRequest) (outFiles []*pluginpb.CodeGene
 		buff := &bytes.Buffer{}
 		formatter.NewFormatter(buff).FormatSchema(schema.AsGraphql())
 		str := buff.String()
+		str = strings.Replace(str, "type Query", "extend type Query", -1)
 		protoFileName := schema.FileDescriptors[0].GetName()
 		outFiles = append(outFiles, &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(resolveGraphqlFilename(protoFileName, merge, extension)),
