@@ -5,12 +5,14 @@ go 1.18
 require (
 	github.com/99designs/gqlgen v0.17.13
 	github.com/golang/protobuf v1.5.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/jhump/protoreflect v1.12.0
 	github.com/nautilus/gateway v0.3.2
 	github.com/nautilus/graphql v0.0.21
 	github.com/pmezard/go-difflib v1.0.0
 	github.com/rs/cors v1.8.2
 	github.com/vektah/gqlparser/v2 v2.4.7
+	go.uber.org/zap v1.22.0
 	google.golang.org/grpc v1.48.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.2.0
 	google.golang.org/protobuf v1.28.1
@@ -26,6 +28,8 @@ require (
 	github.com/sirupsen/logrus v1.7.0 // indirect
 	github.com/urfave/cli/v2 v2.8.1 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	go.uber.org/atomic v1.7.0 // indirect
+	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/mod v0.6.0-dev.0.20220106191415-9b9b3d81d5e3 // indirect
 	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
 	golang.org/x/sys v0.0.0-20220614162138-6c1b26c55098 // indirect

@@ -18,9 +18,11 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 
 	"github.com/fresh8gaming/go-proto-gql/pkg/generator"
+	"github.com/fresh8gaming/go-proto-gql/pkg/logging"
 )
 
 func main() {
+	logging.SetupLogger()
 	in, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		log.Fatal(err)

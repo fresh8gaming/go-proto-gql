@@ -7,10 +7,12 @@ import (
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/vektah/gqlparser/v2/ast"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/compiler/protogen"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
 	gqlpb "github.com/fresh8gaming/go-proto-gql/pkg/graphqlpb"
+	"github.com/fresh8gaming/go-proto-gql/pkg/logging"
 )
 
 const (
@@ -318,6 +320,12 @@ func (s *SchemaDescriptor) CreateObjects(d desc.Descriptor, input bool) (obj *Ob
 		outputOneofRegistrar := map[*desc.OneOfDescriptor]struct{}{}
 
 		for _, df := range dd.GetFields() {
+			logger := logging.GetLogger()
+			logger.Info("df", zap.Any("df", df),
+				zap.Bool("isFieldMask", isFieldMaskField(df)))
+			if isFieldMaskField(df) {
+				continue
+			}
 			fieldOpts := GraphqlFieldOptions(df.AsFieldDescriptorProto().GetOptions())
 			if fieldOpts != nil && fieldOpts.Ignore != nil && *fieldOpts.Ignore {
 				continue
@@ -390,6 +398,13 @@ func (s *SchemaDescriptor) CreateObjects(d desc.Descriptor, input bool) (obj *Ob
 
 	s.objects = append(s.objects, obj)
 	return obj, nil
+}
+
+const fieldMask = "field_mask"
+
+func isFieldMaskField(df *desc.FieldDescriptor) bool {
+	return isRepeated(df) &&
+		df.GetName() == fieldMask
 }
 
 func resolveFieldType(field *desc.FieldDescriptor) desc.Descriptor {
