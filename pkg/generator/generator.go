@@ -7,10 +7,12 @@ import (
 
 	"github.com/jhump/protoreflect/desc"
 	"github.com/vektah/gqlparser/v2/ast"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/compiler/protogen"
 	descriptor "google.golang.org/protobuf/types/descriptorpb"
 
 	gqlpb "github.com/fresh8gaming/go-proto-gql/pkg/graphqlpb"
+	"github.com/fresh8gaming/go-proto-gql/pkg/logging"
 )
 
 const (
@@ -283,6 +285,9 @@ func (s *SchemaDescriptor) CreateObjects(d desc.Descriptor, input bool) (obj *Ob
 	if d == nil {
 		return
 	}
+	if isHiddenObject(d) {
+		return
+	}
 	if obj, ok := s.createdObjects[createdObjectKey{d, input}]; ok {
 		return obj, nil
 	}
@@ -321,6 +326,10 @@ func (s *SchemaDescriptor) CreateObjects(d desc.Descriptor, input bool) (obj *Ob
 			if isFieldMaskField(df) {
 				continue
 			}
+			if isHiddenField(df) {
+				continue
+			}
+
 			fieldOpts := GraphqlFieldOptions(df.AsFieldDescriptorProto().GetOptions())
 			if fieldOpts != nil && fieldOpts.Ignore != nil && *fieldOpts.Ignore {
 				continue
@@ -400,6 +409,33 @@ const fieldMask = "field_mask"
 func isFieldMaskField(df *desc.FieldDescriptor) bool {
 	return isRepeated(df) &&
 		df.GetName() == fieldMask
+}
+
+func isHiddenField(df *desc.FieldDescriptor) bool {
+	logger := logging.GetLogger()
+	switch df.GetName() {
+	case "bet_insight_total_bets",
+		"market_param_type":
+		logger.Info("field names", zap.String("name", df.GetName()))
+		return true
+	}
+	if isRepeated(df) && df.GetName() == "market_param_value" {
+		logger.Info("field names", zap.String("name", df.GetName()))
+		return true
+	}
+	return false
+}
+
+func isHiddenObject(df desc.Descriptor) bool {
+	logger := logging.GetLogger()
+	switch df.GetName() {
+	case "MarketParamType",
+		"MarketParam":
+		logger.Info("field names", zap.String("name", df.GetName()))
+		return true
+	default:
+		return false
+	}
 }
 
 func resolveFieldType(field *desc.FieldDescriptor) desc.Descriptor {
