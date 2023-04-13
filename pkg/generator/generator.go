@@ -417,7 +417,10 @@ func isHiddenField(df *desc.FieldDescriptor) bool {
 	case "bet_insight_total_bets",
 		"market_param_type",
 		"market_param_value",
-		"option_params":
+		"option_params",
+		"competition_source",
+		"competitor_source",
+		"event_language":
 		logger.Info("field names", zap.String("name", df.GetName()))
 		return true
 	}
