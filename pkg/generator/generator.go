@@ -420,7 +420,8 @@ func isHiddenField(df *desc.FieldDescriptor) bool {
 		"option_params",
 		"competition_source",
 		"competitor_source",
-		"event_language":
+		"event_language",
+		"group_by_fields":
 		logger.Info("field names", zap.String("name", df.GetName()))
 		return true
 	}
@@ -435,7 +436,8 @@ func isHiddenObject(df desc.Descriptor) bool {
 	logger := logging.GetLogger()
 	switch df.GetName() {
 	case "MarketParamType",
-		"MarketParam":
+		"MarketParam",
+		"GroupByField":
 		logger.Info("field names", zap.String("name", df.GetName()))
 		return true
 	default:
