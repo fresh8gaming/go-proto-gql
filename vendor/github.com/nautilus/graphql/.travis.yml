@@ -1,0 +1,17 @@
+# system setup
+sudo: required
+
+# setup language
+language: go
+go:
+  - "1.13"
+
+install:
+  - go get
+    golang.org/x/tools/cmd/cover
+    github.com/mattn/goveralls
+    ./...
+
+script:
+  - go test -v -covermode=atomic -coverprofile=coverage.out -race ./...
+  - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
